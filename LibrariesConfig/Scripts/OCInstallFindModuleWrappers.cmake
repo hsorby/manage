@@ -22,7 +22,9 @@ set(IMAGEMAGICK_TARGETNAME MagickCore)
 set(GTEST_TARGETNAME gtest_main) # This will bite us some day.
 # There's also a logical 'gtest' target. But here we can only define one (in general for ALL possible
 # packages to cover with this kind of wrapper)
-    
+
+message(STATUS "==========================================")
+message(STATUS "OPENCMISS_CMAKE_MODULE_PATH: ${OPENCMISS_CMAKE_MODULE_PATH}")
 # Generate the wrappers (if not existing)
 foreach(PACKAGE_NAME ${PACKAGES_WITH_TARGETS})
     # See above
