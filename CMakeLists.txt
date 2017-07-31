@@ -343,7 +343,7 @@ message(STATUS "@")
 
 get_cmake_property(_variableNames VARIABLES)
 foreach (_variableName ${_variableNames})
-    if (_variableName MATCHES "^OC_")
+    if (_variableName MATCHES "^OC_" OR _variableName MATCHES "^OPENCMISS_")
         message(STATUS "${_variableName}=${${_variableName}}")
     endif ()
 endforeach()
