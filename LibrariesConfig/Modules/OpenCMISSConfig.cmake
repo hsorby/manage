@@ -57,12 +57,6 @@ if (OC_DEPENDENCIES_ONLY)
     set(OC_USE_ZINC OFF)
 endif ()
 
-if (OPENCMISS_DEVELOP_ALL)
-    set(OC_EXAMPLES_BRANCH develop)
-else ()
-    set(OC_EXAMPLES_BRANCH v${OpenCMISSLibs_VERSION})
-endif ()
-
 # Include the installation configuration again to stop local changes from being effective
 include(${OPENCMISS_INSTALLATION_CACHE_FILE})
 
