@@ -1,20 +1,20 @@
 
-########################################################
 # If your cmake is older than 3.4 - goodbye. 
 cmake_minimum_required(VERSION 3.4.0 FATAL_ERROR)
 
-########################################################################
-# Ready to start the "build project"
+# Ready to start the "build project".
 project(OpenCMISS-Manage VERSION 1.3.0 LANGUAGES C CXX)
 enable_language(Fortran OPTIONAL)
 enable_testing()
 
 mark_as_advanced(CMAKE_INSTALL_PREFIX)
 
+# Set the OpenCMISS libriaries package to the project version.
 set(OpenCMISSLibs_MAJOR_VERSION ${PROJECT_VERSION_MAJOR})
 set(OpenCMISSLibs_MINOR_VERSION ${PROJECT_VERSION_MINOR})
 set(OpenCMISSLibs_PATCH_VERSION ${PROJECT_VERSION_PATCH})
 set(OpenCMISSLibs_VERSION ${OpenCMISSLibs_MAJOR_VERSION}.${OpenCMISSLibs_MINOR_VERSION}.${OpenCMISSLibs_PATCH_VERSION})
+
 # This is the support email for general enquiries and support about building opencmiss using the new CMake system.
 set(OPENCMISS_BUILD_SUPPORT_EMAIL "users@opencmiss.org")
 
