@@ -148,7 +148,7 @@ function(GET_COMPILER_PATH_FOR_TOOLCHAIN TOOLCHAIN_MNEMONIC VAR_NAME)
         RESULT_VARIABLE RESULT
         OUTPUT_FILE "${OUTPUT_FILENAME}"
         ERROR_FILE "${OUTPUT_FILENAME}"
-        )
+    )
 
     if ("${RESULT}" STREQUAL "0")
         file(STRINGS "${OUTPUT_FILENAME}" OUTPUT_CONTENTS)
@@ -341,9 +341,9 @@ message(STATUS "@")
 message(STATUS "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
 message(STATUS "@")
 
-get_cmake_property(_variableNames VARIABLES)
-foreach (_variableName ${_variableNames})
-    if (_variableName MATCHES "^OC_" OR _variableName MATCHES "^OPENCMISS_")
-        message(STATUS "${_variableName}=${${_variableName}}")
-    endif ()
-endforeach()
+# get_cmake_property(_variableNames VARIABLES)
+# foreach (_variableName ${_variableNames})
+#     if (_variableName MATCHES "^OC_" OR _variableName MATCHES "^OPENCMISS_")
+#         message(STATUS "${_variableName}=${${_variableName}}")
+#     endif ()
+# endforeach()
