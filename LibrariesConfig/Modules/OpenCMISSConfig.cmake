@@ -18,9 +18,6 @@ include(OpenCMISSInterComponentConfig)
 ######################################################################
 # Postprocessing
 
-# Include the installation configuration
-include(${OPENCMISS_INSTALLATION_CACHE_FILE})
-
 # Load local configuration to allow overrides
 # First try at a given path, then local
 set(_CONFIG_FOUND NO)
@@ -56,8 +53,4 @@ if (OC_DEPENDENCIES_ONLY)
     set(OC_USE_IRON OFF)
     set(OC_USE_ZINC OFF)
 endif ()
-
-# Include the installation configuration again to stop local changes from being effective
-include(${OPENCMISS_INSTALLATION_CACHE_FILE})
-
 
