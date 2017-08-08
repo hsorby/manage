@@ -1,3 +1,4 @@
+# Do not change the values in these files.
 
 set(OPENCMISS_EXAMPLES_SOURCE_DIR @OPENCMISS_ROOT@/src/examples)
 set(OPENCMISS_EXAMPLES_BINARY_MPI_DIR @OPENCMISS_ROOT@/build${ARCHITECTURE_MPI_PATH}/examples)
