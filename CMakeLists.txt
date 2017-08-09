@@ -118,9 +118,11 @@ endif ()
 # Configure setting files
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/Settings/ComponentGitValues.cmake"
     "${CMAKE_CURRENT_BINARY_DIR}/Settings/ComponentGitValues.cmake")
+message(STATUS "Applying OpenCMISS component Git settings at: ${CMAKE_CURRENT_BINARY_DIR}/Settings/ComponentGitValues.cmake")
 include("${CMAKE_CURRENT_BINARY_DIR}/Settings/ComponentGitValues.cmake")
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/Settings/ComponentVersions.cmake"
     "${CMAKE_CURRENT_BINARY_DIR}/Settings/ComponentVersions.cmake")
+message(STATUS "Applying OpenCMISS component version settings at: ${CMAKE_CURRENT_BINARY_DIR}/Settings/ComponentVersions.cmake")
 include("${CMAKE_CURRENT_BINARY_DIR}/Settings/ComponentVersions.cmake")
 
 # Path for own MPI BUILD?
