@@ -170,7 +170,8 @@ else ()
     set(PLURAL_S)
 endif ()
 
-set(OPENCMISS_INSTALLATION_CACHE_FILE "${CMAKE_CURRENT_BINARY_DIR}/OpenCMISSCache.cmake")
+# Variable passed to configurations of libraries
+set(SUPPORT_DIR "${CMAKE_CURRENT_BINARY_DIR}/support")
 
 # All arguments passed to construct the currently specified configuration
 set(CURRENT_CONFIGURATION_ARGS)
@@ -223,12 +224,6 @@ add_custom_target(usage ALL
     VERBATIM
 )
 
-# Variable passed to configurations of libraries
-set(SUPPORT_DIR "${CMAKE_CURRENT_BINARY_DIR}/support")
-
-# Indirection for configuring variable in create_config.in.cmake
-set(DOLLAR_SYMBOL $)
-
 # Packaging, creating SDKs etc.
 include(OCPackaging)
 
@@ -249,9 +244,13 @@ else ()
     string(TOLOWER ${OPENCMISS_BUILD_TYPE} SINGLE_CONFIG_BUILD_TYPE)
 endif ()
 
+# Stamp file definitions.
 set(CREATE_CONFIG_STAMP_FILE "${CONFIG_PATH}/stamp/create_config.stamp")
 set(BUILD_CONFIG_STAMP_FILE "${CONFIG_PATH}/stamp/build_config.stamp")
 set(BUILD_CONFIG_STAMP_FILES ${BUILD_CONFIG_STAMP_FILE})
+
+# Indirection for configuring variable in create_config.in.cmake
+set(DOLLAR_SYMBOL $)
 
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/Templates/create_config.in.cmake"
     "${CMAKE_CURRENT_BINARY_DIR}/Scripts/create_config.cmake")
