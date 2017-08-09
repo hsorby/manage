@@ -2,13 +2,26 @@ if (NOT EXISTS "${CONFIG_PATH}")
     make_directory("${CONFIG_PATH}")
 endif ()
 
+if (EXISTS "${CMAKE_CURRENT_BINARY_DIR}/config" OR EXISTS "${CMAKE_CURRENT_BINARY_DIR}/configs")
+    set(_CONFIG_FINALISED TRUE)
+else ()
+    set(_CONFIG_FINALISED FALSE)
+endif ()
+
 execute_process(
     COMMAND "${CMAKE_COMMAND}" -E remove "${DOLLAR_SYMBOL}{STAMP_FILE}"
     COMMAND "${CMAKE_COMMAND}" -E remove "${DOLLAR_SYMBOL}{BUILD_STAMP_FILE}"
     COMMAND "${CMAKE_COMMAND}" -G "${CMAKE_GENERATOR}" ${CONFIGURATION_SETTINGS} "${CMAKE_CURRENT_SOURCE_DIR}/LibrariesConfig"
     WORKING_DIRECTORY "${CONFIG_PATH}"
     RESULT_VARIABLE RESULT
+)
+
+if (NOT _CONFIG_FINALISED)
+    execute_process(
+        COMMAND "${CMAKE_COMMAND}" .
+        WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
     )
+endif ()
 
 if ("${DOLLAR_SYMBOL}{RESULT}" STREQUAL "0")
     execute_process(
