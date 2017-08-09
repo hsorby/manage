@@ -37,7 +37,7 @@ endif ()
 # This is where additional packaging files are located
 set(OC_PACKAGE_FILES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Packaging")
 # Base directory for produced packages - you can specify your own one
-set(OC_PACKAGE_ROOT "${CMAKE_CURRENT_BINARY_DIR}/packaging" CACHE PATH "Base directory for produced packages")
+set(OC_PACKAGE_ROOT "${CMAKE_CURRENT_BINARY_DIR}/packaging")
 file(MAKE_DIRECTORY "${OC_PACKAGE_ROOT}")
 
 function(DIRECTORY_LIST result curdir)
