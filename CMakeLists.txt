@@ -108,7 +108,7 @@ endif()
 
 set(OC_DEVELOPER NO)
 
-set(OC_INSTALLATION_CONFIG "${CMAKE_CURRENT_SOURCE_DIR}/Options/InstallationOptions.cmake")
+set(OC_INSTALLATION_CONFIG "${CMAKE_CURRENT_SOURCE_DIR}/Options/InstallationOptions.txt")
 if (_INSTALLATION_CONFIG_FINALISED)
     finalise_options(${OC_INSTALLATION_CONFIG})
 else ()
