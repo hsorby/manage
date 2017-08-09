@@ -109,11 +109,17 @@ endif()
 set(OC_DEVELOPER NO)
 
 set(OC_INSTALLATION_CONFIG "${CMAKE_CURRENT_SOURCE_DIR}/Options/InstallationOptions.cmake")
-if (NOT _INSTALLATION_CONFIG_FINALISED)
-	read_options(${OC_INSTALLATION_CONFIG})
+if (_INSTALLATION_CONFIG_FINALISED)
+    finalise_options(${OC_INSTALLATION_CONFIG})
 else ()
-	finalise_options(${OC_INSTALLATION_CONFIG})
-endif ()sd
+    read_options(${OC_INSTALLATION_CONFIG})
+endif ()
+
+# Configure setting files
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/Settings/ComponentGitValues.cmake"
+    "${CMAKE_CURRENT_BINARY_DIR}/Settings/ComponentGitValues.cmake")
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/Settings/ComponentVersions.cmake"
+    "${CMAKE_CURRENT_BINARY_DIR}/Settings/ComponentVersions.cmake")
 
 # Path for own MPI BUILD?
 include(OpenCMISSOwnMPI)
