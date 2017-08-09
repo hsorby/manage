@@ -26,7 +26,7 @@ OPENCMISS_DEVELOP_ALL;FALSE;BOOL;Download/checkout development branches of all c
 # expect people to use your installation
 #
 # .. default:: OPENCMISS_BUILD_SUPPORT_EMAIL
-OPENCMISS_INSTALLATION_SUPPORT_EMAIL;${OPENCMISS_BUILD_SUPPORT_EMAIL};STRING;Please set this to your email address, especially if you plan to provide several architecture installations and expect people to use your installation.
+OPENCMISS_INSTALLATION_SUPPORT_EMAIL;developers@opencmiss.org;STRING;Please set this to your email address, especially if you plan to provide several architecture installations and expect people to use your installation.
 
 ##
 # OPENCMISS_RELEASE
