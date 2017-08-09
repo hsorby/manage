@@ -207,14 +207,15 @@ set(CONFIG_PATH "${CMAKE_CURRENT_BINARY_DIR}/config${PLURAL_S}${ACTIVE_ARCHITECT
 if (NOT OPENCMISS_HAVE_MULTICONFIG_ENV)
     set(CONFIG_PATH "${CONFIG_PATH}/${OPENCMISS_BUILD_TYPE}")
 endif ()
-set(CREATE_CONFIG_STAMP_FILE "${CONFIG_PATH}/stamp/create_config.stamp")
+
 add_custom_target(usage ALL
     COMMAND "${CMAKE_COMMAND}" -E echo "Perhaps try targets: create_config, build_config, do_config, or help. For other options read the documentation."
     VERBATIM
 )
 
-# Variable used in the installtion cache passed to configurations
+# Variable passed to configurations of libraries
 set(SUPPORT_DIR "${CMAKE_CURRENT_BINARY_DIR}/support")
+
 # Indirection for configuring variable in create_config.in.cmake
 set(DOLLAR_SYMBOL $)
 
@@ -237,8 +238,10 @@ if (OPENCMISS_HAVE_MULTICONFIG_ENV)
 else ()
     string(TOLOWER ${OPENCMISS_BUILD_TYPE} SINGLE_CONFIG_BUILD_TYPE)
 endif ()
-    set(BUILD_CONFIG_STAMP_FILE "${CONFIG_PATH}/stamp/build_config.stamp")
-    set(BUILD_CONFIG_STAMP_FILES ${BUILD_CONFIG_STAMP_FILE})
+
+set(CREATE_CONFIG_STAMP_FILE "${CONFIG_PATH}/stamp/create_config.stamp")
+set(BUILD_CONFIG_STAMP_FILE "${CONFIG_PATH}/stamp/build_config.stamp")
+set(BUILD_CONFIG_STAMP_FILES ${BUILD_CONFIG_STAMP_FILE})
 
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/Templates/create_config.in.cmake"
     "${CMAKE_CURRENT_BINARY_DIR}/Scripts/create_config.cmake")
@@ -249,26 +252,29 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/Templates/build_config.in.cmake"
 add_custom_command(OUTPUT "${CREATE_CONFIG_STAMP_FILE}"
     DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/Scripts/create_config.cmake"
     COMMAND "${CMAKE_COMMAND}" -DSTAMP_FILE="${CREATE_CONFIG_STAMP_FILE}" -DBUILD_STAMP_FILE="${BUILD_CONFIG_STAMP_FILE}" -P "${CMAKE_CURRENT_BINARY_DIR}/Scripts/create_config.cmake"
-    )
+)
 
 add_custom_target(create_config
-    DEPENDS "${CREATE_CONFIG_STAMP_FILE}"
-    )
+    DEPENDS "${CREATE_CONFIG_STAMP_FILE}")
 add_dependencies(create_config get_sources)
 
 string(REPLACE ";" "-<semi-colon>-" BUILD_CONFIG_COMMAND_TMP "${BUILD_CONFIG_COMMAND}")
 add_custom_command(OUTPUT "${BUILD_CONFIG_STAMP_FILES}"
     DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/Scripts/build_config.cmake"
     COMMAND "${CMAKE_COMMAND}" -DBUILD_COMMAND="${BUILD_CONFIG_COMMAND_TMP}" -DSTAMP_FILE="${BUILD_CONFIG_STAMP_FILE}" -P "${CMAKE_CURRENT_BINARY_DIR}/Scripts/build_config.cmake"
-    )
+)
 
 add_custom_target(build_config
-    DEPENDS "${BUILD_CONFIG_STAMP_FILES}"
-    )
+    DEPENDS "${BUILD_CONFIG_STAMP_FILES}")
 add_dependencies(build_config create_config)
 
+add_custom_target(remove_stamp_files
+    COMMAND "${CMAKE_COMMAND}" -E remove "${CREATE_CONFIG_STAMP_FILE}"
+    COMMAND "${CMAKE_COMMAND}" -E remove "${BUILD_CONFIG_STAMP_FILE}"
+)
+
 add_custom_target(do_config)
-add_dependencies(do_config create_config build_config)
+add_dependencies(do_config remove_stamp_files create_config build_config)
 
 add_custom_target(support
     COMMAND ${CMAKE_COMMAND} --build ${CONFIG_PATH} --target collect_logs --config $<CONFIG>
