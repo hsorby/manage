@@ -24,19 +24,19 @@ execute_process(
     RESULT_VARIABLE RESULT
 )
 
-if (NOT _CONFIG_FINALISED)
-    message(STATUS "Finalising configuration.")
-    execute_process(
-        COMMAND "${CMAKE_COMMAND}" .
-        WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
-    )
-endif ()
 
 if ("${DOLLAR_SYMBOL}{RESULT}" STREQUAL "0")
     execute_process(
         COMMAND "${CMAKE_COMMAND}" -E make_directory "${CONFIG_PATH}/stamp"
         COMMAND "${CMAKE_COMMAND}" -E touch "${DOLLAR_SYMBOL}{STAMP_FILE}"
+    )
+    if (NOT _CONFIG_FINALISED)
+        message(STATUS "Finalising configuration.")
+        execute_process(
+            COMMAND "${CMAKE_COMMAND}" .
+            WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
         )
+    endif ()
     set(RESULT_MESSAGE "Configuration successful: ${CONFIG_PATH}")
 else ()
     set(RESULT_MESSAGE "Failed to create configuration")
