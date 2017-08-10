@@ -2,10 +2,18 @@ if (NOT EXISTS "${CONFIG_PATH}")
     make_directory("${CONFIG_PATH}")
 endif ()
 
-if (EXISTS "${CMAKE_CURRENT_BINARY_DIR}/config" OR EXISTS "${CMAKE_CURRENT_BINARY_DIR}/configs")
-    set(_CONFIG_FINALISED TRUE)
-else ()
+if (EXISTS "${CMAKE_CURRENT_BINARY_DIR}/config")
+    set(_CONFIG_DIR "${CMAKE_CURRENT_BINARY_DIR}/config")
+elseif (EXISTS "${CMAKE_CURRENT_BINARY_DIR}/configs")
+    set(_CONFIG_DIR "${CMAKE_CURRENT_BINARY_DIR}/configs")
+endif ()
+
+file(GLOB RESULT _CONFIG_DIR)
+list(LENGTH RESULT RES_LEN)
+if (RES_LEN EQUAL 0)
     set(_CONFIG_FINALISED FALSE)
+else ()
+    set(_CONFIG_FINALISED TRUE)
 endif ()
 
 execute_process(
