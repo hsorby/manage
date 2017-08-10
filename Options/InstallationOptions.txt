@@ -59,9 +59,45 @@ OPENCMISS_DISABLE_GIT;FALSE;BOOL;Do not use Git to obtain and manage sources.
 # OPENCMISS_GITHUB_USERNAME
 # -------------------------
 #
-# If you set a github username, cmake will automatically try and locate all the
+# If you set a github username, CMake will automatically try and locate all the
 # components as repositories under that github account.
 # Currently applies to **all** repositories.
 #
 # .. default:: <empty>
-set(OPENCMISS_GITHUB_USERNAME )
+OPENCMISS_GITHUB_USERNAME;;STRING;Specify you own username for retreiving repositories from.
+
+##
+# OPENCMISS_ZINC_ONLY
+# -------------------
+#
+# Set this to true to only build the Zinc library.  OPENCMISS_IRON_ONLY and OPENCMISS_DEPENDENCIES_ONLY
+# must be FALSE if this variable is set to TRUE.
+#
+# See also: `OPENCMISS_IRON_ONLY`_ and `OPENCMISS_DEPENDENCIES_ONLY`_
+#
+# .. default:: FALSE
+OPENCMISS_ZINC_ONLY;FALSE;BOOL;Only build the Zinc library.
+
+##
+# OPENCMISS_IRON_ONLY
+# -------------------
+#
+# Set this to true to only build the Iron library.  OPENCMISS_ZINC_ONLY and OPENCMISS_DEPENDENCIES_ONLY
+# must be FALSE if this variable is set to TRUE.
+#
+# See also: `OPENCMISS_ZINC_ONLY`_ and `OPENCMISS_DEPENDENCIES_ONLY`_
+#
+# .. default:: FALSE
+OPENCMISS_IRON_ONLY;FALSE;BOOL;Only build the Iron library.
+
+##
+# OPENCMISS_DEPENDENCIES_ONLY
+# ---------------------------
+#
+# Set this to true to only build the Zinc library.  OPENCMISS_IRON_ONLY and OPENCMISS_ZINC_ONLY
+# must be FALSE if this variable is set to TRUE.
+#
+# See also: `OPENCMISS_IRON_ONLY`_ and `OPENCMISS_ZINC_ONLY`_
+#
+# .. default:: FALSE
+OPENCMISS_DEPENDENCIES_ONLY;FALSE;BOOL;Only build the dependencies for OpenCMISS libraries.

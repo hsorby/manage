@@ -25,58 +25,68 @@ else ()
     set(_INSTALLATION_CONFIG_FINALISED FALSE)
 endif ()
 
-# The default opencmiss root is the grandparent directory of "manage"
-if (NOT DEFINED OPENCMISS_ROOT AND NOT _INSTALLATION_CONFIG_FINALISED)
-    if (NOT DEFINED OPENCMISS_LIBRARIES_ROOT AND NOT DEFINED OPENCMISS_DEPENDENCIES_ROOT AND NOT DEFINED OPENCMISS_CMAKE_MODULES_ROOT AND NOT _INSTALLATION_CONFIG_FINALISED)
-        # Standard installation scenario and the module path can be found relative to this directory
+
+# OPENCMISS_INSTALLATION_TYPE and OPENCMISS_INDEPENDENT_ROOTS define what variables should be set.  
+# If OPENCMISS_INDEPENDENT_ROOTS is FALSE then the root locations may be determined relative
+# to this file, otherwise the roots must be defined.  In either case the root directories must exist.
+set(OPENCMISS_INSTALLATION_TYPE standard CACHE STRING "Define the type of installation to manage.")
+set(INSTALLATION_TYPES standard libraries dependencies)
+set_property(CACHE OPENCMISS_INSTALLATION_TYPE PROPERTY STRINGS ${INSTALLATION_TYPES})
+
+set(OPENCMISS_INDEPENDENT_ROOTS FALSE CACHE BOOL "The roots are independently located; libraries, dependendencies, CMake modules, examples.")
+
+#set(OPENCMISS_EXAMPLES FALSE) #  CACHE BOOL "Add in the OpenCMISS examples to this installation.")
+# Preliminary set the root variables and module path for the installation type.
+if (OPENCMISS_INSTALLATION_TYPE STREQUAL "standard" AND NOT OPENCMISS_INDEPENDENT_ROOTS)
+    if (NOT DEFINED OPENCMISS_ROOT AND NOT _INSTALLATION_CONFIG_FINALISED)
+        # Standard installation scenario and the root directory can be found relative to the source directory
         get_filename_component(OPENCMISS_ROOT "${CMAKE_CURRENT_LIST_DIR}/../.." REALPATH)
     endif ()
     if (NOT DEFINED OPENCMISS_CMAKE_MODULE_PATH)
-        # Standard installation scenario and the module path can be found relative to this directory
-        get_filename_component(OPENCMISS_CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/../../install/share/cmake" REALPATH) 
+        # Standard installation scenario and the module path can be found from OPENCMISS_ROOT.
+        set(OPENCMISS_CMAKE_MODULE_PATH "${OPENCMISS_ROOT}/install/share/cmake")
     endif ()
-endif ()
-
-if (DEFINED OPENCMISS_ROOT)
-    if (_INSTALLATION_CONFIG_FINALISED)
-        unset(OPENCMISS_ROOT CACHE)
-    else ()
-        set(OPENCMISS_ROOT "${OPENCMISS_ROOT}" CACHE PATH "Root location for building OpenCMISS from source.")
-        set(OPENCMISS_ROOT_CONFIG OpenCMISSRoot)
-        set(OPENCMISS_OWN_MPI_CONFIG OpenCMISSOwnMPIRoot)
+    set(OC_EXAMPLES TRUE)
+elseif (OPENCMISS_INSTALLATION_TYPE STREQUAL "standard" AND OPENCMISS_INDEPENDENT_ROOTS)
+    set(OC_EXAMPLES TRUE)
+elseif (OPENCMISS_INSTALLATION_TYPE STREQUAL "libraries" AND NOT OPENCMISS_INDEPENDENT_ROOTS)
+    if (NOT DEFINED OPENCMISS_LIBRARIES_ROOT AND NOT _INSTALLATION_CONFIG_FINALISED)
+        # Standard libraries installation scenario and the root directory can be found relative to the source directory
+        get_filename_component(OPENCMISS_LIBRARIES_ROOT "${CMAKE_CURRENT_LIST_DIR}/../.." REALPATH)
     endif ()
+    set(OC_EXAMPLES FALSE)
+elseif (OPENCMISS_INSTALLATION_TYPE STREQUAL "libraries" AND OPENCMISS_INDEPENDENT_ROOTS)
+    set(OC_EXAMPLES FALSE)
+elseif (OPENCMISS_INSTALLATION_TYPE STREQUAL "dependencies" AND NOT OPENCMISS_INDEPENDENT_ROOTS)
+    set(OC_EXAMPLES FALSE)
+elseif (OPENCMISS_INSTALLATION_TYPE STREQUAL "dependencies" AND OPENCMISS_INDEPENDENT_ROOTS)
+    set(OC_EXAMPLES FALSE)
 else ()
-    if (_INSTALLATION_CONFIG_FINALISED)
-        unset(OPENCMISS_LIBRARIES_ROOT CACHE)
-        unset(OPENCMISS_DEPENDENCIES_ROOT CACHE)
-        unset(OPENCMISS_EXAMPLES_ROOT CACHE)
-        unset(OPENCMISS_CMAKE_MODULES_ROOT CACHE)
-    else ()
-        set(OPENCMISS_LIBRARIES_ROOT "${OPENCMISS_LIBRARIES_ROOT}" CACHE PATH "Root location for building OpenCMISS libraries from source.")
-        set(OPENCMISS_DEPENDENCIES_ROOT "${OPENCMISS_DEPENDENCIES_ROOT}" CACHE PATH "Root location for building OpenCMISS dependencies from source.")
-        set(OPENCMISS_EXAMPLES_ROOT "${OPENCMISS_EXAMPLES_ROOT}" CACHE PATH "Root location for building OpenCMISS examples from source.")
-        set(OPENCMISS_CMAKE_MODULES_ROOT "${OPENCMISS_CMAKE_MODULES_ROOT}" CACHE PATH "Root location for building OpenCMISS cmake modules from source.")
-        set(OPENCMISS_ROOT_CONFIG OpenCMISSIndependentRoots)
-        set(OPENCMISS_OWN_MPI_CONFIG OpenCMISSOwnMPIIndependentRoots)
-    endif ()
+    message(FATAL_ERROR "Unknown installation type asked for: ${OPENCMISS_INSTALLATION_TYPE}.  Try one from; ${INSTALLATION_TYPES}")
 endif ()
 
+set(OPENCMISS_CMAKE_MODULE_PATH "${OPENCMISS_CMAKE_MODULE_PATH}" CACHE PATH "Location of the OpenCMISS CMake modules.")
+# Validate settings - First check we have the modules that we need
 if (NOT EXISTS "${OPENCMISS_CMAKE_MODULE_PATH}/Modules/OpenCMISS/OCArchitecturePathFunctions.cmake")
     message(FATAL_ERROR "'${OPENCMISS_CMAKE_MODULE_PATH}/Modules/OpenCMISS/OCArchitecturePathFunctions.cmake' does not exists.  The OpenCMISS CMake modules may not be installed/available.")
 endif ()
 
-# OPENCMISS_CMAKE_MODULE_PATH must be set
-set(OPENCMISS_CMAKE_MODULE_PATH "${OPENCMISS_CMAKE_MODULE_PATH}" CACHE PATH "Location of the OpenCMISS CMake modules.")
-
+list(APPEND CMAKE_MODULE_PATH "${OPENCMISS_CMAKE_MODULE_PATH}/Modules")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/Scripts")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/Modules")
-list(APPEND CMAKE_MODULE_PATH "${OPENCMISS_CMAKE_MODULE_PATH}/Modules")
 list(APPEND CMAKE_MODULE_PATH "${OPENCMISS_CMAKE_MODULE_PATH}/Modules/OpenCMISS")
+
+if (OPENCMISS_INDEPENDENT_ROOTS)
+    set(OPENCMISS_ROOT_CONFIG OpenCMISSIndependentRoots)
+    set(OPENCMISS_OWN_MPI_CONFIG OpenCMISSOwnMPIIndependentRoots)
+else ()
+    set(OPENCMISS_ROOT_CONFIG OpenCMISSRoot)
+    set(OPENCMISS_OWN_MPI_CONFIG OpenCMISSOwnMPIRoot)
+endif ()
 
 set(CONFIGURED_FILES_DIR "${CMAKE_CURRENT_BINARY_DIR}/ConfiguredFiles")
 list(APPEND CMAKE_MODULE_PATH "${CONFIGURED_FILES_DIR}")
 if (NOT _INSTALLATION_CONFIG_FINALISED)
-    configure_file("${CMAKE_CURRENT_SOURCE_DIR}/Templates/${OPENCMISS_OWN_MPI_CONFIG}.template.cmake" "${CONFIGURED_FILES_DIR}/OpenCMISSOwnMPI.cmake" @ONLY)
     configure_file("${CMAKE_CURRENT_SOURCE_DIR}/Templates/${OPENCMISS_ROOT_CONFIG}.template.cmake" "${CONFIGURED_FILES_DIR}/OpenCMISSRoots.cmake" @ONLY)
 endif ()
 
@@ -106,7 +116,14 @@ if (NOT OPENCMISS_HAVE_MULTICONFIG_ENV)
     #message(STATUS "Setting build type to: ${CMAKE_BUILD_TYPE}")
 endif()
 
+# Set the configuration variables.
 set(OC_DEVELOPER NO)
+
+if (OPENCMISS_INSTALLATION_TYPE STREQUAL "standard" AND NOT OPENCMISS_INDEPENDENT_ROOTS)
+    set(OPENCMISS_OWN_MPI_INSTALL_BASE "${OPENCMISS_ROOT}/install")
+else ()
+    set(OPENCMISS_OWN_MPI_INSTALL_BASE "${OPENCMISS_DEPENDENCIES_ROOT}/install")
+endif ()
 
 set(OC_INSTALLATION_CONFIG "${CMAKE_CURRENT_SOURCE_DIR}/Options/InstallationOptions.txt")
 if (_INSTALLATION_CONFIG_FINALISED)
@@ -125,8 +142,52 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/Settings/ComponentVersions.cmake"
 message(STATUS "Applying OpenCMISS component version settings at: ${CMAKE_CURRENT_BINARY_DIR}/Settings/ComponentVersions.cmake")
 include("${CMAKE_CURRENT_BINARY_DIR}/Settings/ComponentVersions.cmake")
 
-# Path for own MPI BUILD?
-include(OpenCMISSOwnMPI)
+set(VISIBLE_GUI_ENTRIES OPENCMISS_ROOT OPENCMISS_LIBRARIES_ROOT OPENCMISS_DEPENDENCIES_ROOT OPENCMISS_EXAMPLES_ROOT OPENCMISS_IRON_ROOT OPENCMISS_ZINC_ROOT OPENCMISS_DEPENDENCIES_INSTALL_PREFIX)
+set(VISIBLE_standard_GUI_ENTRIES OPENCMISS_ROOT)
+set(VISIBLE_standard_IND_GUI_ENTRIES OPENCMISS_LIBRARIES_ROOT OPENCMISS_EXAMPLES_ROOT OPENCMISS_DEPENDENCIES_ROOT)
+set(VISIBLE_libraries_GUI_ENTRIES OPENCMISS_LIBRARIES_ROOT OPENCMISS_DEPENDENCIES_INSTALL_PREFIX)
+set(VISIBLE_libraries_IND_GUI_ENTRIES OPENCMISS_ZINC_ROOT OPENCMISS_IRON_ROOT OPENCMISS_DEPENDENCIES_INSTALL_PREFIX)
+set(VISIBLE_dependencies_GUI_ENTRIES OPENCMISS_DEPENDENCIES_ROOT)
+set(VISIBLE_dependencies_IND_GUI_ENTRIES OPENCMISS_DEPENDENCIES_ROOT)
+
+if (OPENCMISS_INDEPENDENT_ROOTS)
+    set(IND_MARKER _IND)
+endif ()
+
+set(_VISIBLE_LIST VISIBLE_${OPENCMISS_INSTALLATION_TYPE}${IND_MARKER}_GUI_ENTRIES)
+foreach(_R ${VISIBLE_GUI_ENTRIES})
+    if ("${_R}" IN_LIST ${_VISIBLE_LIST})
+        set(${_R} "${${_R}}" CACHE PATH "Root or install prefix: ${_R}")
+    else ()
+        unset(${_R} CACHE)
+    endif ()
+endforeach()
+
+if (DEFINED OPENCMISS_IRON_ROOT AND OPENCMISS_ZINC_ONLY)
+	unset(OPENCMISS_IRON_ROOT CACHE)
+endif ()
+if (DEFINED OPENCMISS_ZINC_ROOT AND OPENCMISS_IRON_ONLY)
+	unset(OPENCMISS_ZINC_ROOT CACHE)
+endif ()
+
+# Validate settings and options.
+set(INVALID_SETTINGS FALSE)
+if (OPENCMISS_DEPENDENCIES_ONLY)
+    if (OPENCMISS_IRON_ONLY OR OPENCMISS_ZINC_ONLY)
+        set(INVALID_SETTINGS TRUE)
+    endif ()
+elseif (OPENCMISS_IRON_ONLY)
+    if (OPENCMISS_DEPENDENCIES_ONLY OR OPENCMISS_ZINC_ONLY)
+        set(INVALID_SETTINGS TRUE)
+    endif ()
+elseif (OPENCMISS_ZINC_ONLY)
+    if (OPENCMISS_DEPENDENCIES_ONLY OR OPENCMISS_IRON_ONLY)
+        set(INVALID_SETTINGS TRUE)
+    endif ()
+endif ()
+if (INVALID_SETTINGS)
+    message(FATAL_ERROR "The options OPENCMISS_IRON_ONLY, OPENCMISS_ZINC_ONLY, and OPENCMISS_DEPENDENCIES_ONLY are invalid.  Only one may be TRUE at any one time.")
+endif ()
 
 include(OCToolchainCompilers)
 include(OCDetermineMPI)
@@ -225,7 +286,9 @@ add_custom_target(usage ALL
 )
 
 # Packaging, creating SDKs etc.
-include(OCPackaging)
+if (OPENCMISS_INSTALLATION_TYPE STREQUAL "standard" AND NOT OPENCMISS_INDEPENDENT_ROOTS)
+    include(OCPackaging)
+endif ()
 
 ########################################################################
 # Create source management targets and download commands
