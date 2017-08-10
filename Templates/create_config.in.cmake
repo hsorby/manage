@@ -25,7 +25,7 @@ execute_process(
 )
 
 if (NOT _CONFIG_FINALISED)
-    message(STATUS "Finalising configuration -----------------------------")
+    message(STATUS "Finalising configuration.")
     execute_process(
         COMMAND "${CMAKE_COMMAND}" .
         WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
