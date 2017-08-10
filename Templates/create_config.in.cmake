@@ -18,6 +18,10 @@ else ()
     set(_CONFIG_FINALISED TRUE)
 endif ()
 
+if (EXISTS "${CMAKE_CURRENT_BINARY_DIR}/config")
+    message(STATUS "::::: EXISTS")
+endif ()
+
 execute_process(
     COMMAND "${CMAKE_COMMAND}" -E remove "${DOLLAR_SYMBOL}{STAMP_FILE}"
     COMMAND "${CMAKE_COMMAND}" -E remove "${DOLLAR_SYMBOL}{BUILD_STAMP_FILE}"
@@ -28,6 +32,10 @@ execute_process(
 
 
 if ("${DOLLAR_SYMBOL}{RESULT}" STREQUAL "0")
+    if (EXISTS "${CMAKE_CURRENT_BINARY_DIR}/config")
+        message(STATUS "::::: EXISTS NOW")
+    endif ()
+    
     execute_process(
         COMMAND "${CMAKE_COMMAND}" -E make_directory "${CONFIG_PATH}/stamp"
         COMMAND "${CMAKE_COMMAND}" -E touch "${DOLLAR_SYMBOL}{STAMP_FILE}"
