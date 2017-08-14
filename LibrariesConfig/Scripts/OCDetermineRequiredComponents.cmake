@@ -29,3 +29,6 @@ if (OC_IRON_ONLY)
         list(REMOVE_ITEM OC_REQUIRED_COMPONENTS ${_COMPONENT})
     endforeach()
 endif ()
+
+message(STATUS "====================================")
+message(STATUS "OC_REQUIRED_COMPONENTS: ${OC_REQUIRED_COMPONENTS}")
