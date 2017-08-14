@@ -344,7 +344,9 @@ add_subdirectory(Tests)
 add_subdirectory(Examples)
 
 # Installation of general opencmiss configuration helper scripts.
-include(OCInstall)
+if (NOT OC_DEPENDENCIES_ONLY)
+    include(OCInstall)
+endif ()
 
 ########################################################################
 # IDE Stuff
