@@ -38,7 +38,7 @@ set(OPENCMISS_INSTALLATION_TYPE standard CACHE STRING "Define the type of instal
 set(INSTALLATION_TYPES standard libraries dependencies)
 set_property(CACHE OPENCMISS_INSTALLATION_TYPE PROPERTY STRINGS ${INSTALLATION_TYPES})
 
-set(OPENCMISS_INDEPENDENT_ROOTS FALSE CACHE BOOL "The roots are independently located; libraries, dependendencies, CMake modules, examples.")
+set(OPENCMISS_INDEPENDENT_ROOTS FALSE CACHE BOOL "The roots are independently located; libraries, dependendencies, examples.")
 
 #set(OPENCMISS_EXAMPLES FALSE) #  CACHE BOOL "Add in the OpenCMISS examples to this installation.")
 # Preliminary set the root variables and module path for the installation type.
@@ -63,6 +63,10 @@ elseif (OPENCMISS_INSTALLATION_TYPE STREQUAL "libraries" AND NOT OPENCMISS_INDEP
 elseif (OPENCMISS_INSTALLATION_TYPE STREQUAL "libraries" AND OPENCMISS_INDEPENDENT_ROOTS)
     set(OC_EXAMPLES FALSE)
 elseif (OPENCMISS_INSTALLATION_TYPE STREQUAL "dependencies" AND NOT OPENCMISS_INDEPENDENT_ROOTS)
+    if (NOT DEFINED OPENCMISS_DEPENDENCIES_ROOT AND NOT _INSTALLATION_CONFIG_FINALISED)
+        # Standard libraries installation scenario and the root directory can be found relative to the source directory
+        get_filename_component(OPENCMISS_DEPENDENCIES_ROOT "${CMAKE_CURRENT_LIST_DIR}/../.." REALPATH)
+    endif ()
     set(OC_EXAMPLES FALSE)
 elseif (OPENCMISS_INSTALLATION_TYPE STREQUAL "dependencies" AND OPENCMISS_INDEPENDENT_ROOTS)
     set(OC_EXAMPLES FALSE)
