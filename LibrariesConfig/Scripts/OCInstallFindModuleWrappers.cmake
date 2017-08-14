@@ -1,6 +1,6 @@
 # Create the list of all components we'll need FindXXX wrappers for.
 # Those components are all but those we maintain ourselves.
-set(PACKAGES_WITH_TARGETS ${OPENCMISS_REQUIRED_COMPONENTS})
+set(PACKAGES_WITH_TARGETS ${OC_REQUIRED_COMPONENTS})
 list(REMOVE_ITEM PACKAGES_WITH_TARGETS
     LIBCELLML CELLML FIELDML-API ZINC IRON
 )
