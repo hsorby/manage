@@ -1,4 +1,4 @@
-foreach(COMPONENT ${OPENCMISS_COMPONENTS})
+foreach(COMPONENT ${OC_REQUIRED_COMPONENTS})
 
     # Force mandatory ones to be switched on
     if (${COMPONENT} IN_LIST OC_MANDATORY_COMPONENTS)

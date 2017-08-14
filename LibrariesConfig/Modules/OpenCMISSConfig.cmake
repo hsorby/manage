@@ -47,10 +47,3 @@ if (HDF5_BUILD_FORTRAN)
   list(APPEND OPENCMISS_COMPONENTS_WITH_Fortran HDF5)
   list(APPEND OPENCMISS_COMPONENTS_WITH_F90 HDF5)
 endif ()
-
-# Disable iron/zinc if only dependencies should be built
-if (OC_DEPENDENCIES_ONLY)
-    set(OC_USE_IRON OFF)
-    set(OC_USE_ZINC OFF)
-endif ()
-

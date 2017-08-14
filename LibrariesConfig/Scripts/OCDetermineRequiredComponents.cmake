@@ -1,0 +1,31 @@
+
+# Remove components which are not required according to the configuration.
+
+set(OC_REQUIRED_COMPONENTS ${OPENCMISS_COMPONENTS})
+if (OC_DEPENDENCIES_ONLY)
+    list(REMOVE_ITEM OC_REQUIRED_COMPONENTS ZINC IRON)
+endif ()
+
+if (OC_LIBRARIES_ONLY)
+    set(OC_REQUIRED_COMPONENTS IRON ZINC)
+endif ()
+
+foreach(_COMPONENT ${OPENCMISS_COMPONENTS})
+    if (NOT OC_USE_${_COMPONENT})
+        list(REMOVE_ITEM OC_REQUIRED_COMPONENTS ${_COMPONENT})
+    endif ()
+endforeach()
+
+if (OC_ZINC_ONLY)
+    list(REMOVE_ITEM OC_REQUIRED_COMPONENTS IRON)
+    foreach(_COMPONENT ${OPENCMISS_IRON_ONLY_COMPONENTS})
+        list(REMOVE_ITEM OC_REQUIRED_COMPONENTS ${_COMPONENT})
+    endforeach()
+endif ()
+
+if (OC_IRON_ONLY)
+    list(REMOVE_ITEM OC_REQUIRED_COMPONENTS ZINC)
+    foreach(_COMPONENT ${OPENCMISS_ZINC_ONLY_COMPONENTS})
+        list(REMOVE_ITEM OC_REQUIRED_COMPONENTS ${_COMPONENT})
+    endforeach()
+endif ()

@@ -168,11 +168,14 @@ else ()
     get_filename_component(OPENCMISS_LOCAL_CONFIG "${PROJECT_BINARY_DIR}/../OpenCMISSLocalConfig.cmake" ABSOLUTE)
 endif ()
 
-# Create a local config file if it does not exist
+# Create a local config file if it does not exist.
 include(OCCreateLocalConfig)
 
-# Load configuration files
+# Load configuration files.
 include(OpenCMISSConfig)
+
+# Create a list of all the required components.
+include(OCDetermineRequiredComponents)
 
 if (OPENCMISS_HAVE_MULTICONFIG_ENV)
 	mark_as_advanced(CMAKE_CONFIGURATION_TYPES)
