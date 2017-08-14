@@ -67,6 +67,10 @@ elseif (OPENCMISS_INSTALLATION_TYPE STREQUAL "dependencies" AND NOT OPENCMISS_IN
         # Standard libraries installation scenario and the root directory can be found relative to the source directory
         get_filename_component(OPENCMISS_DEPENDENCIES_ROOT "${CMAKE_CURRENT_LIST_DIR}/../.." REALPATH)
     endif ()
+    if (NOT DEFINED OPENCMISS_CMAKE_MODULE_PATH)
+        # Standard installation scenario and the module path can be found from OPENCMISS_ROOT.
+        set(OPENCMISS_CMAKE_MODULE_PATH "${OPENCMISS_DEPENDENCIES_ROOT}/install/share/cmake")
+    endif ()
     set(OC_EXAMPLES FALSE)
 elseif (OPENCMISS_INSTALLATION_TYPE STREQUAL "dependencies" AND OPENCMISS_INDEPENDENT_ROOTS)
     set(OC_EXAMPLES FALSE)
@@ -77,7 +81,7 @@ endif ()
 set(OPENCMISS_CMAKE_MODULE_PATH "${OPENCMISS_CMAKE_MODULE_PATH}" CACHE PATH "Location of the OpenCMISS CMake modules.")
 # Validate settings - First check we have the modules that we need
 if (NOT EXISTS "${OPENCMISS_CMAKE_MODULE_PATH}/Modules/OpenCMISS/OCArchitecturePathFunctions.cmake")
-    message(FATAL_ERROR "'${OPENCMISS_CMAKE_MODULE_PATH}/Modules/OpenCMISS/OCArchitecturePathFunctions.cmake' does not exists.  The OpenCMISS CMake modules may not be installed/available.")
+    message(FATAL_ERROR "'${OPENCMISS_CMAKE_MODULE_PATH}/Modules/OpenCMISS/OCArchitecturePathFunctions.cmake' does not exist.  The OpenCMISS CMake modules may not be installed/available.")
 endif ()
 
 list(APPEND CMAKE_MODULE_PATH "${OPENCMISS_CMAKE_MODULE_PATH}/Modules")
