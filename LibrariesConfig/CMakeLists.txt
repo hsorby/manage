@@ -279,6 +279,15 @@ set(OCL_VIRTUALENV_INSTALL_PREFIX "${OPENCMISS_LIBRARIES_INSTALL_MPI_PREFIX}/vir
 # we need to be able to determine build types for examples/iron/dependencies separately requires separate folders, for now.
 SET(COMMON_PACKAGE_CONFIG_DIR cmake)
 #SET(COMMON_PACKAGE_CONFIG_DIR ../cmake)
+if (OC_LIBRARIES_ONLY)
+    message(STATUS "=======================================")
+    message(STATUS "ARCHITECTURE_MPI_PATH: ${ARCHITECTURE_MPI_PATH}")
+    message(STATUS "ARCHITECTURE_NO_MPI_PATH: ${ARCHITECTURE_NO_MPI_PATH}")
+else ()
+    message(STATUS "===================else====================")
+    message(STATUS "ARCHITECTURE_MPI_PATH: ${ARCHITECTURE_MPI_PATH}")
+    message(STATUS "ARCHITECTURE_NO_MPI_PATH: ${ARCHITECTURE_NO_MPI_PATH}")
+endif ()
 # The path where find_package calls will find the cmake package config files for any opencmiss component
 set(OPENCMISS_PREFIX_PATH_MPI "${OPENCMISS_DEPENDENCIES_INSTALL_MPI_PREFIX}/${COMMON_PACKAGE_CONFIG_DIR}")
 set(OPENCMISS_PREFIX_PATH_NO_MPI "${OPENCMISS_DEPENDENCIES_INSTALL_NO_MPI_PREFIX}/${COMMON_PACKAGE_CONFIG_DIR}")
