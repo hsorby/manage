@@ -63,6 +63,7 @@ elseif (OPENCMISS_INSTALLATION_TYPE STREQUAL "libraries" AND NOT OPENCMISS_INDEP
         # Standard libraries installation scenario and the root directory can be found relative to the source directory
         get_filename_component(OPENCMISS_LIBRARIES_ROOT "${CMAKE_CURRENT_LIST_DIR}/../.." REALPATH)
     endif ()
+    set(OPENCMISS_ROOT_CONFIG OpenCMISSLibrariesRoots)
     set(OC_EXAMPLES FALSE)
 elseif (OPENCMISS_INSTALLATION_TYPE STREQUAL "libraries" AND OPENCMISS_INDEPENDENT_ROOTS)
     set(OC_EXAMPLES FALSE)
