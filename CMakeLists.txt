@@ -53,9 +53,11 @@ if (OPENCMISS_INSTALLATION_TYPE STREQUAL "standard" AND NOT OPENCMISS_INDEPENDEN
     endif ()
     set(OC_EXAMPLES TRUE)
     set(OPENCMISS_ROOT_CONFIG OpenCMISSStandardRootsIndependent)
+    set(OPENCMISS_OWN_MPI_INSTALL_BASE "${OPENCMISS_ROOT}/install")
 elseif (OPENCMISS_INSTALLATION_TYPE STREQUAL "standard" AND OPENCMISS_INDEPENDENT_ROOTS)
     set(OC_EXAMPLES TRUE)
     set(OPENCMISS_ROOT_CONFIG OpenCMISSStandardRoots)
+    set(OPENCMISS_OWN_MPI_INSTALL_BASE "${OPENCMISS_DEPENDENCIES_ROOT}/install")
 elseif (OPENCMISS_INSTALLATION_TYPE STREQUAL "libraries" AND NOT OPENCMISS_INDEPENDENT_ROOTS)
     if (NOT DEFINED OPENCMISS_LIBRARIES_ROOT AND NOT _INSTALLATION_CONFIG_FINALISED)
         # Standard libraries installation scenario and the root directory can be found relative to the source directory
@@ -70,6 +72,7 @@ elseif (OPENCMISS_INSTALLATION_TYPE STREQUAL "dependencies" AND NOT OPENCMISS_IN
         # Standard libraries installation scenario and the root directory can be found relative to the source directory
         get_filename_component(OPENCMISS_DEPENDENCIES_ROOT "${CMAKE_CURRENT_LIST_DIR}/../.." REALPATH)
     endif ()
+    set(OPENCMISS_OWN_MPI_INSTALL_BASE "${OPENCMISS_DEPENDENCIES_ROOT}/install")
     if (NOT DEFINED OPENCMISS_CMAKE_MODULE_PATH)
         # Standard installation scenario and the module path can be found from OPENCMISS_ROOT.
         set(OPENCMISS_CMAKE_MODULE_PATH "${OPENCMISS_DEPENDENCIES_ROOT}/install/share/cmake")
@@ -78,6 +81,7 @@ elseif (OPENCMISS_INSTALLATION_TYPE STREQUAL "dependencies" AND NOT OPENCMISS_IN
     set(OPENCMISS_ROOT_CONFIG OpenCMISSDependenciesRoots)
 elseif (OPENCMISS_INSTALLATION_TYPE STREQUAL "dependencies" AND OPENCMISS_INDEPENDENT_ROOTS)
     set(OPENCMISS_DEPENDENCIES_ONLY TRUE)
+    set(OPENCMISS_OWN_MPI_INSTALL_BASE "${OPENCMISS_DEPENDENCIES_ROOT}/install")
     set(OC_EXAMPLES FALSE)
 else ()
     message(FATAL_ERROR "Unknown installation type asked for: ${OPENCMISS_INSTALLATION_TYPE}.  Try one from; ${INSTALLATION_TYPES}")
@@ -128,12 +132,6 @@ endif()
 
 # Set the configuration variables.
 set(OC_DEVELOPER NO)
-
-if (OPENCMISS_INSTALLATION_TYPE STREQUAL "standard" AND NOT OPENCMISS_INDEPENDENT_ROOTS)
-    set(OPENCMISS_OWN_MPI_INSTALL_BASE "${OPENCMISS_ROOT}/install")
-else ()
-    set(OPENCMISS_OWN_MPI_INSTALL_BASE "${OPENCMISS_DEPENDENCIES_ROOT}/install")
-endif ()
 
 set(OC_INSTALLATION_CONFIG "${CMAKE_CURRENT_SOURCE_DIR}/Options/InstallationOptions.txt")
 if (NOT _INSTALLATION_CONFIG_FINALISED)
@@ -326,7 +324,10 @@ endif ()
 # Iron, Zinc, Dependencies, ...
 add_subdirectory(SourceManagement)
 
-set(BUILD_CONFIG_COMMAND "${CMAKE_COMMAND}" --build . --target install)
+set(BUILD_CONFIG_COMMAND "${CMAKE_COMMAND}" --build .)
+if (NOT OPENCMISS_DEPENDENCIES_ONLY)
+    list(APPEND --target install)
+endif ()
 if (OPENCMISS_HAVE_MULTICONFIG_ENV)
     list(APPEND BUILD_CONFIG_COMMAND --config $<CONFIG>)
 #    set(BUILD_CONFIG_STAMP_FILES)
