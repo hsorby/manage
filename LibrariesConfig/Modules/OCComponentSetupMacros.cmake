@@ -49,7 +49,11 @@ function(addAndConfigureLocalComponent COMPONENT_NAME)
         set(_INSTALL_PREFIX ${OPENCMISS_DEPENDENCIES_INSTALL_NO_MPI_PREFIX})
     endif()
     # Complete build dir with debug/release AFTER everything else (consistent with windows)
-    set(COMPONENT_BUILD_DIR ${BUILD_DIR_BASE}/${FOLDER_NAME}/${BUILD_TYPE_PATH_ELEM})
+    if (OC_LIBRARIES_ONLY AND (OPENCMISS_IRON_BINARY_DIR OR OPENCMISS_ZINC_BINARY_DIR))
+        set(COMPONENT_BUILD_DIR ${BUILD_DIR_BASE}/${BUILD_TYPE_PATH_ELEM})
+    else ()
+        set(COMPONENT_BUILD_DIR ${BUILD_DIR_BASE}/${FOLDER_NAME}/${BUILD_TYPE_PATH_ELEM})
+    endif ()
     # Expose the current build directory outside the function - used only for Iron and Zinc yet 
     set(${COMPONENT_NAME}_BINARY_DIR ${COMPONENT_BUILD_DIR} PARENT_SCOPE)
 
