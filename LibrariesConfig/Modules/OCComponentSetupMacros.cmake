@@ -15,7 +15,11 @@ function(addAndConfigureLocalComponent COMPONENT_NAME)
     ##############################################################
     # Compute directories
     if (COMPONENT_NAME STREQUAL "IRON" OR COMPONENT_NAME STREQUAL "ZINC")
-        set(COMPONENT_SOURCE_DIR "${OPENCMISS_LIBRARIES_SOURCE_DIR}/${FOLDER_NAME}")
+        if (OPENCMISS_ZINC_SOURCE_DIR OR OPENCMISS_IRON_SOURCE_DIR)
+            set(COMPONENT_SOURCE_DIR "${OPENCMISS_${COMPONENT_NAME}_SOURCE_DIR}/${FOLDER_NAME}")
+        else ()
+            set(COMPONENT_SOURCE_DIR "${OPENCMISS_LIBRARIES_SOURCE_DIR}/${FOLDER_NAME}")
+        endif ()
     else ()
         set(COMPONENT_SOURCE_DIR "${OPENCMISS_DEPENDENCIES_SOURCE_DIR}/${FOLDER_NAME}")
     endif ()
